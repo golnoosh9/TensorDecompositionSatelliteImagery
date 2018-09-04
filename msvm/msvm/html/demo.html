@@ -1,0 +1,334 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Multi-Class SVM</title><meta name="generator" content="MATLAB 8.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-03-17"><meta name="DC.source" content="demo.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Multi-Class SVM</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Demo Begin</a></li><li><a href="#2">Initialize all to default</a></li><li><a href="#3">number of samples and Class initialization</a></li><li><a href="#4">SVM Classification</a></li><li><a href="#5">Find Accuracy</a></li></ul></div><h2>Demo Begin<a name="1"></a></h2><h2>Initialize all to default<a name="2"></a></h2><pre class="codeinput">clc
+clear <span class="string">all</span>
+close <span class="string">all</span>
+</pre><h2>number of samples and Class initialization<a name="3"></a></h2><pre class="codeinput">nOfSamples=100;
+nOfClassInstance=10;
+Sample=rand(nOfSamples,60);
+class=round(rand(nOfSamples,1)*(nOfClassInstance-1));
+</pre><h2>SVM Classification<a name="4"></a></h2><pre class="codeinput">Model=svm.train(Sample,class);
+predict=svm.predict(Model,Sample);
+<span class="comment">% [Model,predict] = svm.classify(Sample,class,Sample);</span>
+disp(<span class="string">'class predict'</span>)
+disp([class predict])
+</pre><pre class="codeoutput">Multi Class SVM Model for Class Instance 0 ---&gt;
+          SupportVectors: [23x60 double]
+                   Alpha: [23x1 double]
+                    Bias: -1.4875
+          KernelFunction: @linear_kernel
+      KernelFunctionArgs: {}
+              GroupNames: [100x1 double]
+    SupportVectorIndices: [23x1 double]
+               ScaleData: [1x1 struct]
+           FigureHandles: []
+
+Multi Class SVM Model for Class Instance 1 ---&gt;
+          SupportVectors: [33x60 double]
+                   Alpha: [33x1 double]
+                    Bias: -2.0619
+          KernelFunction: @linear_kernel
+      KernelFunctionArgs: {}
+              GroupNames: [100x1 double]
+    SupportVectorIndices: [33x1 double]
+               ScaleData: [1x1 struct]
+           FigureHandles: []
+
+Multi Class SVM Model for Class Instance 2 ---&gt;
+          SupportVectors: [41x60 double]
+                   Alpha: [41x1 double]
+                    Bias: -2.0265
+          KernelFunction: @linear_kernel
+      KernelFunctionArgs: {}
+              GroupNames: [100x1 double]
+    SupportVectorIndices: [41x1 double]
+               ScaleData: [1x1 struct]
+           FigureHandles: []
+
+Multi Class SVM Model for Class Instance 3 ---&gt;
+          SupportVectors: [44x60 double]
+                   Alpha: [44x1 double]
+                    Bias: -2.0773
+          KernelFunction: @linear_kernel
+      KernelFunctionArgs: {}
+              GroupNames: [100x1 double]
+    SupportVectorIndices: [44x1 double]
+               ScaleData: [1x1 struct]
+           FigureHandles: []
+
+Multi Class SVM Model for Class Instance 4 ---&gt;
+          SupportVectors: [42x60 double]
+                   Alpha: [42x1 double]
+                    Bias: -1.7984
+          KernelFunction: @linear_kernel
+      KernelFunctionArgs: {}
+              GroupNames: [100x1 double]
+    SupportVectorIndices: [42x1 double]
+               ScaleData: [1x1 struct]
+           FigureHandles: []
+
+Multi Class SVM Model for Class Instance 5 ---&gt;
+          SupportVectors: [36x60 double]
+                   Alpha: [36x1 double]
+                    Bias: -1.8401
+          KernelFunction: @linear_kernel
+      KernelFunctionArgs: {}
+              GroupNames: [100x1 double]
+    SupportVectorIndices: [36x1 double]
+               ScaleData: [1x1 struct]
+           FigureHandles: []
+
+Multi Class SVM Model for Class Instance 6 ---&gt;
+          SupportVectors: [25x60 double]
+                   Alpha: [25x1 double]
+                    Bias: -1.5757
+          KernelFunction: @linear_kernel
+      KernelFunctionArgs: {}
+              GroupNames: [100x1 double]
+    SupportVectorIndices: [25x1 double]
+               ScaleData: [1x1 struct]
+           FigureHandles: []
+
+Multi Class SVM Model for Class Instance 7 ---&gt;
+          SupportVectors: [43x60 double]
+                   Alpha: [43x1 double]
+                    Bias: -1.9318
+          KernelFunction: @linear_kernel
+      KernelFunctionArgs: {}
+              GroupNames: [100x1 double]
+    SupportVectorIndices: [43x1 double]
+               ScaleData: [1x1 struct]
+           FigureHandles: []
+
+Multi Class SVM Model for Class Instance 8 ---&gt;
+          SupportVectors: [42x60 double]
+                   Alpha: [42x1 double]
+                    Bias: -1.5907
+          KernelFunction: @linear_kernel
+      KernelFunctionArgs: {}
+              GroupNames: [100x1 double]
+    SupportVectorIndices: [42x1 double]
+               ScaleData: [1x1 struct]
+           FigureHandles: []
+
+Multi Class SVM Model for Class Instance 9 ---&gt;
+          SupportVectors: [31x60 double]
+                   Alpha: [31x1 double]
+                    Bias: -1.7759
+          KernelFunction: @linear_kernel
+      KernelFunctionArgs: {}
+              GroupNames: [100x1 double]
+    SupportVectorIndices: [31x1 double]
+               ScaleData: [1x1 struct]
+           FigureHandles: []
+
+
+Train Model Completed
+
+Multi Class SVM classify values Claculated  for Class Instance 0 
+Multi Class SVM classify values Claculated  for Class Instance 1 
+Multi Class SVM classify values Claculated  for Class Instance 2 
+Multi Class SVM classify values Claculated  for Class Instance 3 
+Multi Class SVM classify values Claculated  for Class Instance 4 
+Multi Class SVM classify values Claculated  for Class Instance 5 
+Multi Class SVM classify values Claculated  for Class Instance 6 
+Multi Class SVM classify values Claculated  for Class Instance 7 
+Multi Class SVM classify values Claculated  for Class Instance 8 
+Multi Class SVM classify values Claculated  for Class Instance 9 
+ SVM Classification is completed
+class predict
+     3     3
+     2     2
+     3     3
+     7     7
+     4     4
+     1     1
+     1     1
+     8     8
+     8     8
+     3     3
+     4     4
+     3     3
+     5     5
+     7     7
+     7     7
+     6     6
+     1     1
+     2     2
+     2     2
+     0     0
+     3     3
+     8     8
+     1     1
+     8     8
+     2     2
+     3     3
+     3     3
+     0     0
+     6     6
+     3     3
+     1     1
+     6     6
+     8     8
+     9     9
+     2     2
+     2     2
+     5     5
+     3     3
+     5     5
+     7     7
+     5     5
+     8     8
+     3     3
+     3     3
+     7     7
+     2     2
+     8     8
+     4     4
+     2     2
+     2     2
+     7     7
+     6     6
+     4     4
+     8     8
+     9     9
+     9     9
+     3     3
+     2     2
+     3     3
+     7     7
+     7     7
+     8     8
+     8     8
+     2     2
+     4     4
+     1     1
+     8     8
+     3     3
+     6     6
+     7     7
+     3     3
+     4     4
+     5     5
+     5     5
+     4     4
+     5     5
+     4     4
+     9     9
+     8     8
+     5     5
+     7     7
+     4     4
+     0     0
+     5     5
+     5     5
+     2     2
+     3     3
+     7     7
+     1     1
+     4     4
+     3     3
+     1     1
+     1     1
+     4     4
+     4     4
+     2     2
+     7     7
+     9     9
+     7     7
+     8     8
+
+</pre><h2>Find Accuracy<a name="5"></a></h2><pre class="codeinput">Accuracy=mean(class==predict)*100;
+fprintf(<span class="string">'\nAccuracy =%d\n'</span>,Accuracy)
+</pre><pre class="codeoutput">
+Accuracy =100
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Multi-Class SVM
+%% Demo Begin
+%% Initialize all to default
+clc
+clear all
+close all
+%% number of samples and Class initialization 
+nOfSamples=100;
+nOfClassInstance=10;
+Sample=rand(nOfSamples,60);
+class=round(rand(nOfSamples,1)*(nOfClassInstance-1));
+%% SVM Classification
+Model=svm.train(Sample,class);
+predict=svm.predict(Model,Sample);
+% [Model,predict] = svm.classify(Sample,class,Sample);
+disp('class predict')
+disp([class predict])
+%% Find Accuracy
+Accuracy=mean(class==predict)*100;
+fprintf('\nAccuracy =%d\n',Accuracy)
+##### SOURCE END #####
+--></body></html>
